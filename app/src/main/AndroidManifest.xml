@@ -23,7 +23,21 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".gamecore.CalibrationActivity" android:exported="true">
+        <activity android:name=".gamecore.CalibrationLeftActivity" android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".gamecore.CalibrationRightActivity" android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".gamecore.CalibrationRotateActivity" android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

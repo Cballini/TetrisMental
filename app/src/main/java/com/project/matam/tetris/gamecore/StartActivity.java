@@ -33,7 +33,7 @@ public class StartActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(StartActivity.this, CalibrationActivity.class);
+                Intent intent = new Intent(StartActivity.this, CalibrationLeftActivity.class);
                 startActivity(intent);
             }
         });
