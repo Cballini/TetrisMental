@@ -18,8 +18,18 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        final Button playButton = (Button) findViewById(R.id.play);
+        final Button playButton = (Button) findViewById(R.id.bluetooth);
         playButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StartActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        final Button settingsButton = (Button) findViewById(R.id.settings);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -27,6 +37,5 @@ public class StartActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 }
