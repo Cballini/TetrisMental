@@ -1,5 +1,6 @@
 package com.project.matam.tetris.gamecore;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Handler;
@@ -240,8 +241,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             for(int x = 0; x < col; x++){
                 if(this.firstGame)
                 {
+                    Resources res = getResources();
                     Bitmap item = Bitmap.createBitmap(25,25, Bitmap.Config.RGB_565);
-                    item.eraseColor(Color.RED);
+                    item.eraseColor(res.getColor(R.color.icons));
                     this.items.add(item);
                 }
                 this.gameMatrix[y][x] = 0;
@@ -354,8 +356,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             for(int x = 0; x < col; x++){
                 if(brickManager.getGameMatrix()[y][x] == 0)
                 {
+                    Resources res = getResources();
                     int coord_matrix_to_list = y*col+x;
-                    this.items.get(coord_matrix_to_list).eraseColor(Color.RED);
+                    this.items.get(coord_matrix_to_list).eraseColor(res.getColor(R.color.icons));
                     gridAdapter.notifyDataSetChanged();
                 }
             }
