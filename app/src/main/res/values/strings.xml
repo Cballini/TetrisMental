@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Tetris</string>
+    <string name="app_name">Tetris Mental</string>
+    <string name="calibration">Calibrage de l\'Emotiv Insight</string>
 </resources>
