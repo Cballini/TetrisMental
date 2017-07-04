@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -12,15 +13,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 import com.project.matam.tetris.R;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.logging.Handler;
 
 /**
  * Created by cecib on 03/07/2017.
@@ -34,6 +38,7 @@ public class StartActivity extends AppCompatActivity {
 
     private Context context;
     private ArrayList<String> devicesList;
+    private ArrayAdapter<String> devicesAdapter;
     private BluetoothAdapter bluetoothAdapter;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) {
@@ -46,6 +51,7 @@ public class StartActivity extends AppCompatActivity {
                 deviceStr = device.getName() + "\n" + device.getAddress();
                 if (!devicesList.contains(deviceStr)) {
                     devicesList.add(deviceStr);
+                    devicesAdapter.notifyDataSetChanged();
                 }
             }
         }
@@ -59,6 +65,7 @@ public class StartActivity extends AppCompatActivity {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         devicesList = new ArrayList<String>();
+        devicesAdapter = new ArrayAdapter<String>(StartActivity.this, android.R.layout.select_dialog_singlechoice, devicesList);
         final Button playButton = (Button) findViewById(R.id.play);
         playButton.setOnClickListener(new View.OnClickListener() {
 
@@ -96,6 +103,8 @@ public class StartActivity extends AppCompatActivity {
                 }
             }
         });
+
+
     }
 
     @Override
@@ -130,6 +139,7 @@ public class StartActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         bluetoothAdapter.startDiscovery();
         registerReceiver(receiver, filter);
+        displayBTDevices();
     }
 
     private void requestBTPermission() {
@@ -146,6 +156,35 @@ public class StartActivity extends AppCompatActivity {
                     break;
             }
         }
+    }
+
+    private void displayBTDevices() {
+        AlertDialog.Builder listDeviceDialogBuilder = new AlertDialog.Builder(StartActivity.this);
+        listDeviceDialogBuilder.setTitle("Select One Name:-");
+
+        listDeviceDialogBuilder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        listDeviceDialogBuilder.setPositiveButton("refresh", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog,int which) {
+                dialog.dismiss();
+                displayBTDevices();
+            }
+        });
+
+        listDeviceDialogBuilder.setAdapter(devicesAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String deviceStr = devicesAdapter.getItem(which);
+                // TODO: connect to device
+            }
+        });
+        listDeviceDialogBuilder.show();
     }
 
     @Override
