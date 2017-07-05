@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.project.matam.tetris">
+
+    <uses-sdk tools:overrideLibrary="com.emotiv"/>
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -32,6 +35,14 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.project.matam.tetris.mentalcommand.CreateUser"
+            android:label="@string/title_activity_activity_trainning" >
+        </activity>
+        <activity
+            android:name="com.project.matam.tetris.mentalcommand.ActivityTrainning"
+            android:label="@string/title_activity_activity_trainning" >
         </activity>
     </application>
 

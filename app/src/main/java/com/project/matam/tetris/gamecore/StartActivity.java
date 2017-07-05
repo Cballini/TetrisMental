@@ -24,7 +24,6 @@ import com.project.matam.tetris.R;
 
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.logging.Handler;
 
 /**
  * Created by cecib on 03/07/2017.
@@ -65,7 +64,7 @@ public class StartActivity extends AppCompatActivity {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         devicesList = new ArrayList<String>();
-        devicesAdapter = new ArrayAdapter<String>(StartActivity.this, android.R.layout.select_dialog_singlechoice, devicesList);
+        devicesAdapter = new ArrayAdapter<String>(StartActivity.this, android.R.layout.simple_list_item_1, devicesList);
         final Button playButton = (Button) findViewById(R.id.play);
         playButton.setOnClickListener(new View.OnClickListener() {
 
