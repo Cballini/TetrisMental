@@ -12,18 +12,18 @@ import com.project.matam.tetris.R;
  * Created by cecib on 03/07/2017.
  */
 
-public class CalibrationActivity extends AppCompatActivity {
+public class CalibrationRotateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calibration);
+        setContentView(R.layout.activity_calibration_rotate);
 
-        final Button playButton = (Button) findViewById(R.id.calibrationButtonOK);
+        final Button playButton = (Button) findViewById(R.id.calibrationButtonOKRotate);
         playButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CalibrationActivity.this, MainActivity.class);
+                Intent intent = new Intent(CalibrationRotateActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <com.project.matam.tetris.CustomTextView
+        android:id="@+id/calibrationTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/calibration"
+        android:layout_marginTop="40dp"
+        android:textSize="45dp"
+        android:textColor="@color/icons"
+        android:textAlignment="center"
+        app:font="Cone.ttf"/>
+
+    <com.project.matam.tetris.CustomTextView
+        android:id="@+id/calibrationChronoRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="160dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:textSize="40dp"
+        android:text="chrono"
+        android:textColor="@color/white"
+        app:font="Cone.ttf"/>
+
+    <com.project.matam.tetris.CustomTextView
+        android:id="@+id/calibrationInstructionsRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="230dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginLeft="25dp"
+        android:textSize="30dp"
+        android:text="@string/instructionRight"
+        android:textColor="@color/icons"
+        app:font="Cone.ttf" />
+
+    <Button
+        android:id="@+id/calibrationButtonOKRight"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/calibrationChronoRight"
+        android:layout_marginBottom="70dp"
+        android:background="@drawable/ok"/>
+
+    <Button
+        android:id="@+id/calibrationButtonRestartRight"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/calibrationButtonOKRight"
+        android:layout_marginBottom="70dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/no"/>
+
+
+
+</RelativeLayout>

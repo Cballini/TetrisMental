@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Mental Tetris</string>
+    <string name="app_name1">Mental</string>
+    <string name="app_name2">Tetris</string>
     <string name="calibration">Calibrage de l\'Emotiv Insight</string>
     <string name="settings">Paramétrage</string>
+    <string name="instructionLeft">Concentrez-vous et visualisez l\'objet glisser vers la gauche. \nUne fois le temps écoulé, si vous êtes satisfait validez votre calibrage en appuyant sur le bouton blanc. Sinon appuyez sur le bouton gris et recommencez.</string>
+    <string name="instructionRight">Concentrez-vous et visualisez l\'objet glisser vers la droite. \nUne fois le temps écoulé, si vous êtes satisfait validez votre calibrage en appuyant sur le bouton blanc. Sinon appuyez sur le bouton gris et recommencez.</string>
+    <string name="instructionRotate">Concentrez-vous et visualisez l\'objet tourner sur lui même dans le sens horaire. \nUne fois le temps écoulé, si vous êtes satisfait validez votre calibrage en appuyant sur le bouton blanc. Sinon appuyez sur le bouton gris et recommencez.</string>
 </resources>
