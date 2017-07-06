@@ -3,6 +3,7 @@ package com.project.matam.tetris.gamecore;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -22,12 +23,26 @@ import com.project.matam.tetris.bricks.Brick_S;
 import com.project.matam.tetris.bricks.Brick_T;
 import com.project.matam.tetris.bricks.Brick_Z;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity {
+
+    private final static double MENTAL_COMMAND_BORDER_LINE = 0.5;
+    private final static int MENTAL_COMMAND_ROTATE_ID = 1;
+    private final static int MENTAL_COMMAND_LEFT_ID = 2;
+    private final static int MENTAL_COMMAND_RIGHT_ID = 3;
+    private final static int MENTAL_COMMAND_DROP_ID = 4;
+    private final static int FILE_READER_INTERVAL = 500;
+    private final static int UPDATE_VIEW_MESSAGE = 0;
 
     //********************
     //Gridview of the game : Grille où vont etre affichées les cases et les pieces
@@ -65,18 +80,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // de la brique en cours de mouvement.
     private Thread thread = null;
     private List<Brick> bricks = new ArrayList<Brick>();
+    private Handler gameHandler;
 
     //********************
     // Objects on the view : Les differents objets qui seront sur l'écran
-    private Button bLeft;
-    private Button bRight;
-    private Button bDown;
-    private Button bRotate;
     private TextView tvScore;
     private List<ImageView> previews = new ArrayList<>();
     private ImageView preview;
     private ImageView preview2;
 
+    // file reader
+    private InputStream txtMentalCommandFile;
+    private Timer fileReaderTimer;
+    private BufferedReader reader;
     //******************************************************
     //Permet de mieux gerer le gameOver et la reprise de jeu
     boolean firstGame = true;
@@ -99,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initScreenApp();
         initViews();
         initGridItems(this.mRow,this.mCol);
+        txtMentalCommandFile = getResources().openRawResource(R.raw.test);
+        reader = new BufferedReader(new InputStreamReader(txtMentalCommandFile));
 
         //********************************************************
         //Initialise la grille de jeu et les Bitmap via l'adapteur
@@ -109,10 +127,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //*****************************
         //Initialise la première partie
         initGame();
+        initFileReaderTimer();
 
         //**************************
         //Lancement du thread de jeu
-        final Handler gameHandler = new Handler();
+        gameHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg)
+            {
+                if (msg.what == UPDATE_VIEW_MESSAGE) {
+                    reloadGameGrid(mRow, mCol, bricks.get(0).getClr());
+                }
+            }
+        };
 
         final Runnable gameThread = new Runnable() {
             @Override
@@ -163,50 +190,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gameHandler.postDelayed(gameThread,time);
     }
 
-    /**
-     * Fonction qui permet de gerer les events des boutons de l'écran
-     * A chaque clique on verifie si l'action est possible
-     * @param v : vue de l'objet sur lequel on clique
-     *
-     */
-    @Override
-    public void onClick(View v){
-        switch(v.getId()){
-            case R.id.LeftB:
-                if(bricks.get(0).validLeft(brickManager.getGameMatrix()))
-                {
-                    brickManager.removeBrick(bricks.get(0));
-                    bricks.get(0).left();
-                    brickManager.addBrick(bricks.get(0));
-                    reloadGameGrid(mRow,mCol,bricks.get(0).getClr());
-                }
-                break;
-            case R.id.RightB:
-                if(bricks.get(0).validRight(brickManager.getGameMatrix())){
-                    brickManager.removeBrick(bricks.get(0));
-                    bricks.get(0).right();
-                    brickManager.addBrick(bricks.get(0));
-                    reloadGameGrid(mRow,mCol,bricks.get(0).getClr());
-                }
-                break;
-            case R.id.DownB:
-                while(bricks.get(0).validDown(brickManager.getGameMatrix())){
-                        brickManager.removeBrick(bricks.get(0));
-                        bricks.get(0).down();
-                        brickManager.addBrick(bricks.get(0));
-
-                }
-                reloadGameGrid(mRow,mCol,bricks.get(0).getClr());
-                break;
-            case R.id.RotateB:
-                if(bricks.get(0).validRotate(brickManager.getGameMatrix())){
-                    brickManager.removeBrick(bricks.get(0));
-                    bricks.get(0).rotate();
-                    brickManager.addBrick(bricks.get(0));
-                    reloadGameGrid(mRow,mCol,bricks.get(0).getClr());
-                }
-                break;
-        }
+    private void initFileReaderTimer() {
+        fileReaderTimer = new Timer();
+        fileReaderTimer.scheduleAtFixedRate(new TimerTask(){
+            @Override
+            public void run() {
+                readFileProgressivly();
+            }
+        }, 0, FILE_READER_INTERVAL);
     }
 
     /**
@@ -219,14 +210,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.preview2 = (ImageView)findViewById(R.id.Preview2);
         this.previews.add(this.preview);
         this.previews.add(this.preview2);
-        this.bLeft = (Button)findViewById(R.id.LeftB);
-        this.bRight = (Button)findViewById(R.id.RightB);
-        this.bDown = (Button)findViewById(R.id.DownB);
-        this.bRotate = (Button)findViewById(R.id.RotateB);
-        this.bLeft.setOnClickListener(this);
-        this.bRight.setOnClickListener(this);
-        this.bDown.setOnClickListener(this);
-        this.bRotate.setOnClickListener(this);
     }
 
     /**
@@ -427,6 +410,71 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.tvScore.setText(String.valueOf(score));
     }
 
+    private void readFileProgressivly() {
+        String line;
+        String[] values;
+        try {
+            line = reader.readLine();
+            if (line == null) {
+                try {
+                    txtMentalCommandFile.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    fileReaderTimer.cancel();
+                    fileReaderTimer.purge();
+                    return;
+                }
+            }
+            values = line.split(";");
+            if (Double.parseDouble(values[1]) >= MENTAL_COMMAND_BORDER_LINE) {
+                handleCommand(Integer.parseInt(values[0]));
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            try {
+                txtMentalCommandFile.close();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+        }
+    }
 
-
+    private void handleCommand(int commandId) {
+        switch (commandId) {
+            case MENTAL_COMMAND_ROTATE_ID:
+                if(bricks.get(0).validRotate(brickManager.getGameMatrix())){
+                    brickManager.removeBrick(bricks.get(0));
+                    bricks.get(0).rotate();
+                    brickManager.addBrick(bricks.get(0));
+                    gameHandler.sendEmptyMessage(UPDATE_VIEW_MESSAGE);
+                }
+                break;
+            case MENTAL_COMMAND_LEFT_ID:
+                if(bricks.get(0).validLeft(brickManager.getGameMatrix()))
+                {
+                    brickManager.removeBrick(bricks.get(0));
+                    bricks.get(0).left();
+                    brickManager.addBrick(bricks.get(0));
+                    gameHandler.sendEmptyMessage(UPDATE_VIEW_MESSAGE);
+                }
+                break;
+            case MENTAL_COMMAND_RIGHT_ID:
+                if(bricks.get(0).validRight(brickManager.getGameMatrix())){
+                    brickManager.removeBrick(bricks.get(0));
+                    bricks.get(0).right();
+                    brickManager.addBrick(bricks.get(0));
+                    gameHandler.sendEmptyMessage(UPDATE_VIEW_MESSAGE);
+                }
+                break;
+            case MENTAL_COMMAND_DROP_ID:
+                while(bricks.get(0).validDown(brickManager.getGameMatrix())){
+                    brickManager.removeBrick(bricks.get(0));
+                    bricks.get(0).down();
+                    brickManager.addBrick(bricks.get(0));
+                    gameHandler.sendEmptyMessage(UPDATE_VIEW_MESSAGE);
+                }
+                break;
+        }
+    }
 }

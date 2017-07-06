@@ -21,6 +21,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 import com.project.matam.tetris.R;
+import com.project.matam.tetris.getdata.EngineConnector;
+import com.project.matam.tetris.mentalcommand.ActivityTrainning;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -139,6 +141,7 @@ public class StartActivity extends AppCompatActivity {
         bluetoothAdapter.startDiscovery();
         registerReceiver(receiver, filter);
         displayBTDevices();
+        EngineConnector.setContext(this);
     }
 
     private void requestBTPermission() {
@@ -181,6 +184,8 @@ public class StartActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String deviceStr = devicesAdapter.getItem(which);
                 // TODO: connect to device
+                Intent intent = new Intent(StartActivity.this, ActivityTrainning.class);
+                startActivity(intent);
             }
         });
         listDeviceDialogBuilder.show();

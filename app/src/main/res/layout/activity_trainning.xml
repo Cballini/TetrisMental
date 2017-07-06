@@ -31,7 +31,7 @@
         android:layout_below="@+id/topbar"
         android:orientation="horizontal" >
 
-        <com.emotiv.spinner.CustomSpinner
+        <com.project.matam.tetris.spinner.CustomSpinner
             android:id="@+id/spinnerAction"
             android:layout_width="150dp"
             android:layout_height="50dp"

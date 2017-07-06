@@ -3,6 +3,8 @@ package com.project.matam.tetris.spinner;
 import android.content.Context;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.widget.Spinner;
 
 
 /** Spinner extension that calls onItemSelected even when the selection is the same as its previous value */
