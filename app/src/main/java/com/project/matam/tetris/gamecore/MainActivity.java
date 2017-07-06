@@ -12,7 +12,10 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.emotiv.insight.IEdk;
+import com.emotiv.insight.IEmoStateDLL;
 import com.project.matam.tetris.R;
 import com.project.matam.tetris.bricks.Brick;
 import com.project.matam.tetris.bricks.Brick_I;
@@ -28,7 +31,7 @@ import java.util.List;
 import java.util.Random;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, EngineInterface{
 
     //********************
     //Gridview of the game : Grille où vont etre affichées les cases et les pieces
@@ -69,10 +72,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //********************
     // Objects on the view : Les differents objets qui seront sur l'écran
-    private Button bLeft;
-    private Button bRight;
-    private Button bDown;
-    private Button bRotate;
     private TextView tvScore;
     private List<ImageView> previews = new ArrayList<>();
     private ImageView preview;
@@ -90,10 +89,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int time = 600;
     int maxTime = 10;
 
+    //******************
+    //Variables Emotiv Insight
+    EngineConnector engineConnector;
+    Button bTooth;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        EngineConnector.setContext(this);
+        engineConnector =EngineConnector.shareInstance();
+        engineConnector.delegate = this;
 
         //**************************************
         //Initialise la vue et la matrice de jeu
@@ -125,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     {
                         if(bricks.get(0).validDown(brickManager.getGameMatrix()))
                         {
+                            //TODO détection mouvements
                             brickManager.removeBrick(bricks.get(0));
                             bricks.get(0).down();
                             brickManager.addBrick(bricks.get(0));
@@ -137,11 +146,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //on vérifie si une ligne est complete et on met à jour le score
                             playerScore(mRow,mCol);
                             //on augmente la vitesse du jeu
-                            time = time - (score/120);
+                            /*time = time - (score/120);
                             if(time<maxTime)
                             {
                                 time = maxTime;
-                            }
+                            }*/
                             //On enleve la piece en cours qui va etre remplacée par la prochaine
                             //dans la liste et on ajoute une nouvelle piece random dans la liste
                             bricks.remove(0);
@@ -172,39 +181,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public void onClick(View v){
-        switch(v.getId()){
-            case R.id.LeftB:
-                if(bricks.get(0).validLeft(brickManager.getGameMatrix()))
-                {
-                    brickManager.removeBrick(bricks.get(0));
-                    bricks.get(0).left();
-                    brickManager.addBrick(bricks.get(0));
-                    reloadGameGrid(mRow,mCol,bricks.get(0).getClr());
-                }
-                break;
-            case R.id.RightB:
-                if(bricks.get(0).validRight(brickManager.getGameMatrix())){
-                    brickManager.removeBrick(bricks.get(0));
-                    bricks.get(0).right();
-                    brickManager.addBrick(bricks.get(0));
-                    reloadGameGrid(mRow,mCol,bricks.get(0).getClr());
-                }
-                break;
-            case R.id.DownB:
-                while(bricks.get(0).validDown(brickManager.getGameMatrix())){
-                        brickManager.removeBrick(bricks.get(0));
-                        bricks.get(0).down();
-                        brickManager.addBrick(bricks.get(0));
-
-                }
-                reloadGameGrid(mRow,mCol,bricks.get(0).getClr());
-                break;
-            case R.id.RotateB:
-                if(bricks.get(0).validRotate(brickManager.getGameMatrix())){
-                    brickManager.removeBrick(bricks.get(0));
-                    bricks.get(0).rotate();
-                    brickManager.addBrick(bricks.get(0));
-                    reloadGameGrid(mRow,mCol,bricks.get(0).getClr());
+        switch(v.getId()) {
+            case R.id.btooth:
+                IEdk.IEE_EngineConnect(this, "");
+                if (!engineConnector.isConnected) {
+                    Toast.makeText(MainActivity.this, "You need to connect to your headset.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Connexion OK.", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -220,14 +203,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.preview2 = (ImageView)findViewById(R.id.Preview2);
         this.previews.add(this.preview);
         this.previews.add(this.preview2);
-        this.bLeft = (Button)findViewById(R.id.LeftB);
-        this.bRight = (Button)findViewById(R.id.RightB);
-        this.bDown = (Button)findViewById(R.id.DownB);
-        this.bRotate = (Button)findViewById(R.id.RotateB);
-        this.bLeft.setOnClickListener(this);
-        this.bRight.setOnClickListener(this);
-        this.bDown.setOnClickListener(this);
-        this.bRotate.setOnClickListener(this);
+        this.bTooth = (Button)findViewById(R.id.btooth);
+        this.bTooth.setOnClickListener(this);
     }
 
     /**
@@ -430,6 +407,77 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.tvScore.setText(String.valueOf(score));
     }
 
+
+    @Override
+    public void trainStarted() {
+
+    }
+
+    @Override
+    public void trainSucceed() {
+
+    }
+
+    @Override
+    public void trainCompleted() {
+
+    }
+
+    @Override
+    public void trainRejected() {
+
+    }
+
+    @Override
+    public void trainErased() {
+
+    }
+
+    @Override
+    public void trainReset() {
+
+    }
+
+    @Override
+    public void userAdded(int userId) {
+    }
+
+    @Override
+    public void userRemove() {
+    }
+
+    @Override
+    public void detectedActionLowerFace(String typeAction) {
+        System.out.println("TEST typeAction = "+String.valueOf(typeAction));
+        switch(typeAction){
+            case "blinkLeft":
+                if(bricks.get(0).validLeft(brickManager.getGameMatrix()))
+                {
+                    brickManager.removeBrick(bricks.get(0));
+                    bricks.get(0).left();
+                    brickManager.addBrick(bricks.get(0));
+                    reloadGameGrid(mRow,mCol,bricks.get(0).getClr());
+                }
+                break;
+            case "blinkRight":
+                if(bricks.get(0).validRight(brickManager.getGameMatrix())){
+                    brickManager.removeBrick(bricks.get(0));
+                    bricks.get(0).right();
+                    brickManager.addBrick(bricks.get(0));
+                    reloadGameGrid(mRow,mCol,bricks.get(0).getClr());
+                }
+                break;
+            case "smile":
+                if(bricks.get(0).validRotate(brickManager.getGameMatrix())){
+                    brickManager.removeBrick(bricks.get(0));
+                    bricks.get(0).rotate();
+                    brickManager.addBrick(bricks.get(0));
+                    reloadGameGrid(mRow,mCol,bricks.get(0).getClr());
+                }
+                break;
+        }
+
+    }
 
 
 }

@@ -94,46 +94,11 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="82dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/LeftB"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Left" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/RotateB"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.50"
-                    android:text="Rotate" />
-
-                <Button
-                    android:id="@+id/DownB"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.50"
-                    android:text="Down" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/RightB"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Right" />
-        </LinearLayout>
+    <Button
+        android:id="@+id/btooth"
+        android:layout_width="70dp"
+        android:layout_height="80dp"
+        android:background="@drawable/bluetooth"/>
 
     </LinearLayout>
 
